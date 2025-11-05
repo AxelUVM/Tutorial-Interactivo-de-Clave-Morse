@@ -1,10 +1,21 @@
 import flet as ft
 
-def main(page: ft.Page):
-    # TODO: completar la funcion para revisar la respuesta del usuario
-    def check_answer():
-        pass
+# TODO: completar la funcion para revisar la respuesta del usuario
+class Player():
+    def __init__(self, score: int = 0, streak: int = 0, mult: float = 1.0):
+        self.score = score
+        self.streak = streak
+        self.mult = mult
 
+    def check_answer(self, answer: str, code: str):
+        if answer == code:
+            self.score += 100
+            self.streak += 1
+        elif answer != score and score > 0:
+            self.score -= 100
+            self.streak = 0
+
+def main(page: ft.Page):
     # esta variable trackea la cuenta del score
     score = ft.Text("0", size=25, data=0)
     # esta variable trackea la clave actual
