@@ -1,4 +1,5 @@
 import flet as ft
+
 morse={ #la lista de la tarduccion del abecedario a morse 
 
     "A": ".-",
