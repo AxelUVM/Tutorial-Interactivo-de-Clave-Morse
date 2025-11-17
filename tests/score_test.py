@@ -26,3 +26,10 @@ class TestScore(unittest.TestCase):
 
         player.check_answer("-14", ".-")
         self.assertEqual(player.score, player_expected.score)
+
+    def test_score_with_multiplier(self):
+        player = Player(score=100, mult=1.5)
+        player_expected = Player(250)
+        player.check_answer("A", ".-")
+
+        self.assertEqual(player.score, player_expected.score)
