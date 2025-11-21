@@ -133,6 +133,12 @@ class Difficulty():
     def set_difficulty(self, diff):
         self.set = diff
 
+class Mode():
+    def __init__(self):
+        self.set = ""
+
+    def set_mode(self, mode):
+        self.set = mode
 # Boton custom para aprender como funcionaban los botones, se cambiara por 
 # submit_button = ft.Button("Submit", on_click=btn_callback, bgcolor="#282828", color="#ffffff", style=ft.ButtonStyle(shape=ft.ContinuousRectangleBorder(radius=30)), height=100, width=300)
 # dentro de la funcion main para seguir el mismo patron que los otros botones
@@ -158,18 +164,23 @@ def main(page: ft.Page):
     streak = ft.Text(f"Streak: {player.streak}", size=25)
     # texto de mult que se muestra en pantalla
     mult = ft.Text(f"Mult: {player.mult}", size=25)
+    # texto que lleva la cuenta de los strikes
+    strikes = ft.Text(f"Strikes: {player.count}", size=25)
     # esta variable trackea la clave actual
     code = ft.Text("Something went wrong", size = 50, expand=True)
     # esta variable contiene la respuesta del usuario
     answer = ft.TextField(label="answer", text_align=ft.TextAlign.CENTER, width=200)
     # Instancia de la dificultad
     diff = Difficulty()
+    # Instancia del modo
+    mode = Mode()
 
     # Funcion que reestablece los textos cuando se vuelve al menu principal
     def restore_labels():
         score.value = f"Score: {player.score}"
         streak.value = f"Streak: {player.streak}"
         mult.value = f"Mult: {player.mult}"
+        strikes.value = f"Strikes: {player.count}"
     
     # EL callback hacia la funcion de player para revisar la respuesta del jugador + actualizar el socore, streak y multiplicador
     def btn_callback(e):
@@ -185,10 +196,15 @@ def main(page: ft.Page):
                 morse_dict = morse_dict_hard
         
         player.check_answer(answer.value, code.value, morse_dict)
+        if mode.set == "play" and player.count >= 3:
+            page.clean()
+            page.add(game_over)
+            page.update
         score.value = f"Score: {player.score}"
         streak.value = f"Streak: {player.streak}"
         mult.value = f"Mult: {player.mult}"
         code.value = morse_list[random.randint(0, len(morse_list)) - 1]
+        strikes.value = f"Strikes: {player.count}"
         page.update()
 
     # El callback que cambia hacia la pagina de la cheatsheet en la pagina de practica
@@ -206,6 +222,7 @@ def main(page: ft.Page):
     # El callback que lleva hacia la pagina de practica desde el menu principal
     def practice_page(e):
         page.clean()
+        mode.set_mode("practice")
         page.add(practice)
         match diff.set:
             case "easy":
@@ -219,6 +236,7 @@ def main(page: ft.Page):
     # El callback que lleva hacia la pagina para jugar desde el menu principal
     def play_page(e):
         page.clean()
+        mode.set_mode("play")
         page.add(play)
         match diff.set:
             case "easy":
@@ -268,7 +286,7 @@ def main(page: ft.Page):
     submit_button = SubBtn("Submit", on_click=btn_callback)
 
     # botones que solo aparecen en la version de practica
-    cheatsheet_change_button = ft.Button("Cheetsheet", on_click=change_cheatsheet_page, bgcolor="#282828", color="#ffffff", style=ft.ButtonStyle(shape=ft.ContinuousRectangleBorder(radius=30)))
+    cheatsheet_change_button = ft.Button("Cheatsheet", on_click=change_cheatsheet_page, bgcolor="#282828", color="#ffffff", style=ft.ButtonStyle(shape=ft.ContinuousRectangleBorder(radius=30)))
     cheatsheet_return_button = ft.Button("Return", on_click=return_practice_page, bgcolor="#282828", color="#ffffff", style=ft.ButtonStyle(shape=ft.ContinuousRectangleBorder(radius=30)))
 
     # botones de menu principal
@@ -321,7 +339,7 @@ def main(page: ft.Page):
                 ft.Row([code], alignment="center"),
                 ft.Row([answer], alignment="center"),
                 ft.Row([submit_button], alignment="center"),
-                ft.Row([ft.Column([score, streak, mult, ft.Text("Time Left: Placeholder"), ft.Text("Strikes: Placeholder")], alignment="center")], alignment="center"),
+                ft.Row([ft.Column([score, streak, mult, strikes], alignment="center")], alignment="center"),
             ], scroll=ft.ScrollMode.ALWAYS)
     settings = ft.Column([
                 return_button,
@@ -335,7 +353,7 @@ def main(page: ft.Page):
                 ft.Row([settings_button], alignment="center"),
                 ft.Row([difficulty_button], alignment="center"),
             ], alignment="center", scroll=ft.ScrollMode.ALWAYS)
-    # menu principal 
+    # menu de dificultades
     difficulty = ft.Column([
                 ft.Row([ft.Text("Select Difficulty", size=50)], alignment="center"),
                 ft.Row([easy_button], alignment="center"),
@@ -343,6 +361,13 @@ def main(page: ft.Page):
                 ft.Row([hard_button], alignment="center"),
                 ft.Row([return_button], alignment="center"),
             ], alignment="center", scroll=ft.ScrollMode.ALWAYS)
+    # interfaz de game over
+    game_over = ft.Column([
+                ft.Row([ft.Text("GAME OVER", size=50)], alignment="center"),
+                ft.Row([ft.Text("Final Result", size=25)], alignment="center"),
+                ft.Row([ft.Column([score, streak, mult], alignment="center")], alignment="center"),
+                ft.Row([return_button], alignment="center"),
+            ], scroll=ft.ScrollMode.ALWAYS)
 
     page.add(main_page)
 

@@ -6,6 +6,7 @@ class Player():
         self.score = score
         self.streak = streak
         self.mult = mult
+        self.count = 0
     
     # La funcion que checa si la respuesta es correcta, acepta una respuesta (string) un codigo (string) y el diccionario de respuestas (dependiendo de la dificultad)
     def check_answer(self, answer: str, code: str, morse_dict: dict):
@@ -18,17 +19,27 @@ class Player():
                 self.score -= 100
                 self.streak = 0
                 self.mult = 1.0
+                self.count += 1
             else:
                 self.score = 0
                 self.streak = 0
                 self.mult = 1.0
+                self.count += 1
         except KeyError:
-            self.score -= 100
-            self.streak = 0
-            self.mult = 1.0
+            if self.score > 0:
+                self.score -= 100
+                self.streak = 0
+                self.mult = 1.0
+                self.count += 1
+            else:
+                self.score = 0
+                self.streak = 0
+                self.mult = 1.0
+                self.count += 1
     
     # Funcion que reinicia los atributos cuando se vuelve al menu principal
     def restart_attribs(self):
         self.score = 0
         self.streak = 0
         self.mult = 1.0
+        self.count = 0
