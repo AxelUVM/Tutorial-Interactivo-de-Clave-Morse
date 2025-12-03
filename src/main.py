@@ -227,6 +227,9 @@ class Lang():
 
 # Funcion main
 def main(page: ft.Page):
+    page.window.width = 200        # window's width is 200 px
+    page.window.height = 200       # window's height is 200 px
+    page.window.resizable = False
     # instancia del jugador. ir a src/player.py para ver mas
     player = Player()
     glob_lang = Lang()
